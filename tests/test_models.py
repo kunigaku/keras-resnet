@@ -41,3 +41,9 @@ class TestResNet200:
         model = keras_resnet.models.ResNet2D200(x)
 
         assert len(model.layers) == 741
+
+
+class TestResNet1D:
+    def test_constructor(self, x1d):
+        model = keras_resnet.models.ResNet1D34(x1d)
+        assert len(model.layers) == 160

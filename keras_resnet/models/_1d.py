@@ -53,6 +53,7 @@ class ResNet1D(keras.Model):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(
         self,
         inputs,
@@ -66,7 +67,7 @@ class ResNet1D(keras.Model):
         **kwargs
     ):
         if keras.backend.image_data_format() == "channels_last":
-            axis = 3
+            axis = -1
         else:
             axis = 1
 
@@ -74,10 +75,13 @@ class ResNet1D(keras.Model):
             numerical_names = [True] * len(blocks)
 
         x = keras.layers.ZeroPadding1D(padding=3, name="padding_conv1")(inputs)
-        x = keras.layers.Conv1D(64, (7, 7), strides=(2, 2), use_bias=False, name="conv1")(x)
-        x = keras_resnet.layers.BatchNormalization(axis=axis, epsilon=1e-5, freeze=freeze_bn, name="bn_conv1")(x)
+        x = keras.layers.Conv1D(
+            64, 7, strides=2, use_bias=False, name="conv1")(x)
+        x = keras_resnet.layers.BatchNormalization(
+            axis=axis, epsilon=1e-5, freeze=freeze_bn, name="bn_conv1")(x)
         x = keras.layers.Activation("relu", name="conv1_relu")(x)
-        x = keras.layers.MaxPooling1D((3, 3), strides=(2, 2), padding="same", name="pool1")(x)
+        x = keras.layers.MaxPooling1D(
+            3, strides=2, padding="same", name="pool1")(x)
 
         features = 64
 
@@ -89,7 +93,8 @@ class ResNet1D(keras.Model):
                     features,
                     stage_id,
                     block_id,
-                    numerical_name=(block_id > 0 and numerical_names[stage_id]),
+                    numerical_name=(
+                        block_id > 0 and numerical_names[stage_id]),
                     freeze_bn=freeze_bn
                 )(x)
 
@@ -101,12 +106,15 @@ class ResNet1D(keras.Model):
             assert classes > 0
 
             x = keras.layers.GlobalAveragePooling1D(name="pool5")(x)
-            x = keras.layers.Dense(classes, activation="softmax", name="fc1000")(x)
+            x = keras.layers.Dense(
+                classes, activation="softmax", name="fc1000")(x)
 
-            super(ResNet1D, self).__init__(inputs=inputs, outputs=x, *args, **kwargs)
+            super(ResNet1D, self).__init__(
+                inputs=inputs, outputs=x, *args, **kwargs)
         else:
             # Else output each stages features
-            super(ResNet1D, self).__init__(inputs=inputs, outputs=outputs, *args, **kwargs)
+            super(ResNet1D, self).__init__(
+                inputs=inputs, outputs=outputs, *args, **kwargs)
 
 
 class ResNet1D18(ResNet1D):
@@ -137,6 +145,7 @@ class ResNet1D18(ResNet1D):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(self, inputs, blocks=None, include_top=True, classes=1000, freeze_bn=False, *args, **kwargs):
         if blocks is None:
             blocks = [2, 2, 2, 2]
@@ -181,6 +190,7 @@ class ResNet1D34(ResNet1D):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(self, inputs, blocks=None, include_top=True, classes=1000, freeze_bn=False, *args, **kwargs):
         if blocks is None:
             blocks = [3, 4, 6, 3]
@@ -225,6 +235,7 @@ class ResNet1D50(ResNet1D):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(self, inputs, blocks=None, include_top=True, classes=1000, freeze_bn=False, *args, **kwargs):
         if blocks is None:
             blocks = [3, 4, 6, 3]
@@ -272,6 +283,7 @@ class ResNet1D101(ResNet1D):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(self, inputs, blocks=None, include_top=True, classes=1000, freeze_bn=False, *args, **kwargs):
         if blocks is None:
             blocks = [3, 4, 23, 3]
@@ -319,6 +331,7 @@ class ResNet1D152(ResNet1D):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(self, inputs, blocks=None, include_top=True, classes=1000, freeze_bn=False, *args, **kwargs):
         if blocks is None:
             blocks = [3, 8, 36, 3]
@@ -366,6 +379,7 @@ class ResNet1D200(ResNet1D):
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
+
     def __init__(self, inputs, blocks=None, include_top=True, classes=1000, freeze_bn=False, *args, **kwargs):
         if blocks is None:
             blocks = [3, 24, 36, 3]
